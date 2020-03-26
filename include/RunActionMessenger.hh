@@ -9,8 +9,10 @@
 
 class RunAction;
 class G4UIdirectory;
-class G4UIcmdWithAString;
 class G4UIcmdWithABool;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithADoubleAndUnit;
 
 /// it implements command:
 ///  - /analysis/SetFileName name.root
@@ -26,8 +28,12 @@ class RunActionMessenger : public G4UImessenger{
 		RunAction* fRunAction;
 		
 		G4UIdirectory* fAnalysisDirectory;
+		G4UIdirectory* fPrimaryDirectory;
 		
 		G4UIcmdWithAString*   fCmdFileName;
+		G4UIcmdWithABool*     fCmdOCT;
+		G4UIcmdWithABool*     fCmdDN;
+		G4UIcmdWithADoubleAndUnit* fCmdGunTime;
 };
 
 #endif

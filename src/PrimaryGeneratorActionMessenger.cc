@@ -11,42 +11,42 @@
 
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction* Det) : G4UImessenger(), fPrimaryGeneratorAction(Det){
-	fBeamX = new G4UIcmdWithADoubleAndUnit("/Matrix/BeamX", this);
+	fBeamX = new G4UIcmdWithADoubleAndUnit("/SciFi/BeamX", this);
 	fBeamX->SetGuidance("Set beam sigma x");
 	fBeamX->SetUnitCategory("Length");
 	fBeamX->SetParameterName("size_x", false);
 	fBeamX->AvailableForStates(G4State_Idle);
 
-	fBeamY = new G4UIcmdWithADoubleAndUnit("/Matrix/BeamY", this);
+	fBeamY = new G4UIcmdWithADoubleAndUnit("/SciFi/BeamY", this);
 	fBeamY->SetGuidance("Set beam sigma y");
 	fBeamY->SetUnitCategory("Length");
 	fBeamY->SetParameterName("size_y", false);
 	fBeamY->AvailableForStates(G4State_Idle);
 
-	fBeam = new G4UIcmdWithADoubleAndUnit("/Matrix/Beam", this);
+	fBeam = new G4UIcmdWithADoubleAndUnit("/SciFi/Beam", this);
 	fBeam->SetGuidance("Set beam sigma. It will set same sigma for x and y");
 	fBeam->SetUnitCategory("Length");
 	fBeam->SetParameterName("size", false);
 	fBeam->AvailableForStates(G4State_Idle);
 
-	fTheta = new G4UIcmdWithADouble("/Matrix/Theta", this);
+	fTheta = new G4UIcmdWithADouble("/SciFi/Theta", this);
 	fTheta->SetGuidance("Set beam theta. It rotates the beam around z direction");
 	fTheta->SetParameterName("theta", false);
 	fTheta->AvailableForStates(G4State_Idle);
 
-	fPositionX = new G4UIcmdWithADoubleAndUnit("/Matrix/PositionX", this);
+	fPositionX = new G4UIcmdWithADoubleAndUnit("/SciFi/PositionX", this);
 	fPositionX->SetGuidance("Set beam position x");
 	fPositionX->SetUnitCategory("Length");
 	fPositionX->SetParameterName("position_x", false);
 	fPositionX->AvailableForStates(G4State_Idle);
 
-	fPositionY = new G4UIcmdWithADoubleAndUnit("/Matrix/Positiony", this);
+	fPositionY = new G4UIcmdWithADoubleAndUnit("/SciFi/Positiony", this);
 	fPositionY->SetGuidance("Set beam position y");
 	fPositionY->SetUnitCategory("Length");
 	fPositionY->SetParameterName("position_y", false);
 	fPositionY->AvailableForStates(G4State_Idle);
 
-	fReal = new G4UIcmdWithABool("/Matrix/Real", this);
+	fReal = new G4UIcmdWithABool("/SciFi/Real", this);
 	fReal->SetGuidance("Active mixed muon and positron beam");
 	fReal->SetParameterName("real", false);
 	fReal->AvailableForStates(G4State_Idle);

@@ -60,6 +60,7 @@ set(SCIFI_SCRIPTS
     vis.mac
     signals.C
     readgio.cpp
+    parallel.py
     )
 
 foreach(_script ${SCIFI_SCRIPTS})
