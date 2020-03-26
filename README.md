@@ -1,2 +1,2 @@
-# SciFi
-SciFi complete simulation
+# SingleFiber
+Single SciFi fiber simulation
