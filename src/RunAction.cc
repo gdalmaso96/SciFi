@@ -38,9 +38,12 @@ void RunAction::BeginOfRunAction(const G4Run*){
 	fTree->Branch( "ein",  &fEin);
 	fTree->Branch("edep", &fEdep);
 	fTree->Branch("delta", &fDelta);
+	fTree->Branch("ThetaIn", &fThetaIn);
+	fTree->Branch("TrackLength", &fTrackLength);
 	fTree->Branch("eventID", &fID);
 	fTree->Branch("Ngamma", &fNgamma);
 	fTree->Branch("NgammaOut", &fNgammaOut);
+	fTree->Branch("PrimaryChannel", &fPrimaryChannel);
 	fTree->Branch("Out", &fOut);
 	fTree->Branch("Abs", &fAbs);
 //	fTree->Branch("Transition", &fTransition);

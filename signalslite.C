@@ -256,16 +256,12 @@ void createSignals(double threashold, TString file){
 
 	int Channel = 0, Fiber = 0;
 	double signalTime, Amplitude = 0;
-
-	TGraph G;
 	
-	Twaves[0]->Branch("Signal", &G);
 	Twaves[0]->Branch("Channel", &Channel);
 	Twaves[0]->Branch("Fiber", &Fiber);
 	Twaves[0]->Branch("Amplitude", &Amplitude);
 	Twaves[0]->Branch("Time", &signalTime);
 
-	Twaves[1]->Branch("Signal", &G);
 	Twaves[1]->Branch("Channel", &Channel);
 	Twaves[1]->Branch("Fiber", &Fiber);
 	Twaves[1]->Branch("Amplitude", &Amplitude);
@@ -329,10 +325,6 @@ void createSignals(double threashold, TString file){
 					thCheck = 1;
 					timeCheck= signalT.at(int(deltaT/pitch/2));
 					signalTime = globalTime - deltaT/2;
-					G = TGraph(signal.size());
-					for(int l = 0; l < signal.size(); l++){
-						G.SetPoint(l, signalT.at(l), signal.at(l));
-					}
 					int l = 0;
 					double DeltaT = 0;
 					while(true){
@@ -342,7 +334,7 @@ void createSignals(double threashold, TString file){
 						}
 						l++;
 					}
-					Amplitude = TMath::MaxElement(int(DeltaT/pitch), &G.GetY()[int(deltaT/pitch/2)]);
+					Amplitude = TMath::MaxElement(int(DeltaT/pitch), &signal.at(int(deltaT/pitch/2)));
 					Twaves[Channel]->Fill();
 				}
 				else if(signal.at(int(deltaT/pitch/2)) < threashold && thCheck == 1){
@@ -374,10 +366,6 @@ void createSignals(double threashold, TString file){
 				thCheck = 1;
 				timeCheck= signalT.at(int(deltaT/pitch/2));
 				signalTime = globalTime - deltaT/2;
-				G = TGraph(signal.size());
-				for(int l = 0; l < signal.size(); l++){
-					G.SetPoint(l, signalT.at(l), signal.at(l));
-				}
 				int l = 0;
 				double DeltaT = 0;
 				while(true){
@@ -387,7 +375,7 @@ void createSignals(double threashold, TString file){
 					}
 					l++;
 				}
-				Amplitude = TMath::MaxElement(int(DeltaT/pitch), &G.GetY()[int(deltaT/pitch/2)]);
+				Amplitude = TMath::MaxElement(int(DeltaT/pitch), &signal.at(int(deltaT/pitch/2)));
 				Twaves[Channel]->Fill();
 			}
 			else if(signal.at(int(deltaT/pitch/2)) < threashold && thCheck == 1){
@@ -494,7 +482,8 @@ void reordering(TString file){
 	F->cd();
 	Tnew->Write("rwaves", TObject::kOverwrite);
 	F->Close();
-}
+}		
+
 void processing(double threashold, TString file){
 	TFile* F = TFile::Open(file + ".root");
 	TTree* T = (TTree*) F->Get("rwaves");

@@ -47,13 +47,12 @@ class FiberHit : public G4VHit{
 		inline void SetNgammaOut(G4int val){fNgammaOut = val;}
 		inline G4int GetNgammaOut(){return fNgammaOut;}
 
-
-		inline void Clear(){fEin = 0; fEdep = 0; fDelta = 0; fNgamma = 0; fNgammaOut = 0;}
+		inline void Clear(){fEin = 0; fEdep = 0; fDelta = 0; fThetaIn = 0; fNgamma = 0; fNgammaOut = 0; fPrimaryChannel = 0;}
 		inline const G4VPhysicalVolume* GetPhysV(){return fPhysVol;}
 
 	private:
-		G4double fEin, fEdep, fDelta;
-		G4int fNgamma, fNgammaOut;
+		G4double fEin, fEdep, fDelta, fThetaIn;
+		G4int fNgamma, fNgammaOut, fPrimaryChannel;
 		const G4VPhysicalVolume* fPhysVol;
 };
 

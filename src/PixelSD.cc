@@ -267,7 +267,9 @@ G4bool PixelSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 		G4double dimensionsx = - ((G4Box*) physVol->GetLogicalVolume()->GetSolid())->GetXHalfLength();
 
 		G4ThreeVector momentum = aStep->GetPostStepPoint()->GetMomentumDirection();
-		G4ThreeVector localMomentum = theTouchable->GetHistory()->GetTopTransform().TransformPoint(momentum);
+		G4AffineTransform momentumTransform = theTouchable->GetHistory()->GetTopTransform();
+		momentumTransform.SetNetTranslation(G4ThreeVector(0,0,0));
+		G4ThreeVector localMomentum = momentumTransform.TransformPoint(momentum);
 
 		if(aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary && 
 		   std::fabs(localpos1.z() + dimensions) < kCarTolerance){
@@ -276,6 +278,14 @@ G4bool PixelSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 			G4double energy = aStep->GetPreStepPoint()->GetKineticEnergy();
 			G4double a = G4UniformRand();
 			G4double p = GetAbsProbability(energy/CLHEP::eV);
+/*
+			std::cout << "pos w " << stppos1 << std::endl;
+			std::cout << "pos l " << localpos1 << std::endl;
+			std::cout << "mom w " << momentum << std::endl;
+			std::cout << "mom l " << localMomentum << std::endl;
+			std::cout << "fiber " << aStep->GetPreStepPoint()->GetTouchable()->GetReplicaNumber(2) << std::endl;
+			std::cout << "sipm " << aStep->GetPreStepPoint()->GetTouchable()->GetReplicaNumber(1) << std::endl << std::endl;
+*/
 			fOCTflag = 0;
 			if(a < p){ // SiPM Fill Factor
 				
@@ -305,6 +315,7 @@ G4bool PixelSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 							newTrack->push_back(OCT);
 							fOCTflagvec.push_back(1);
 						}
+						else fOCTflagvec.push_back(0);
 						fDNflagvec.push_back(1);
 						
 						action->AdvanceDNTime(fChannel);

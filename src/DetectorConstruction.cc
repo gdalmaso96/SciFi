@@ -488,7 +488,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 		OpCoreSurface->SetFinish(ground);
 		OpCoreSurface->SetPolish(0.985);
 
-		G4LogicalBorderSurface* CoreSurface = new G4LogicalBorderSurface("CoreSurface", physCore, physFClad, OpCoreSurface);
+		new G4LogicalBorderSurface("CoreSurface", physCore, physFClad, OpCoreSurface);
 
 		// First Cladding Surface
 		G4OpticalSurface* OpFCladSurface = new G4OpticalSurface("FCladSurface");
@@ -497,7 +497,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 		OpFCladSurface->SetFinish(ground);
 		OpFCladSurface->SetPolish(0.98);
 
-		G4LogicalBorderSurface* FCladSurface = new G4LogicalBorderSurface("FCladSurface", physFClad, physSClad, OpFCladSurface);
+		new G4LogicalBorderSurface("FCladSurface", physFClad, physSClad, OpFCladSurface);
 
 		// Second Cladding Surface
 		G4OpticalSurface* OpSCladSurface = new G4OpticalSurface("SCladSurface");
@@ -506,7 +506,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 		OpSCladSurface->SetFinish(ground);
 		OpSCladSurface->SetPolish(0.5);
 
-		G4LogicalBorderSurface* SCladSurface = new G4LogicalBorderSurface("SCladSurface", physSClad, physWorld, OpSCladSurface);
+		new G4LogicalBorderSurface("SCladSurface", physSClad, physWorld, OpSCladSurface);
 	}
 
 	return physWorld;

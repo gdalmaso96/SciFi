@@ -21,6 +21,7 @@ EventAction::EventAction(RunAction* runAction) : G4UserEventAction(), fRunAction
 EventAction::~EventAction(){}
 
 void EventAction::BeginOfEventAction(const G4Event* event){
+	fTrackLength = 0;
 	fNgamma    = 0;
 	fNgammaOut = 0;
 	fOut = 0;
@@ -50,8 +51,7 @@ void EventAction::EndOfEventAction(const G4Event* event){
 	FiberHit* fiberHit;
 	G4int N = FiberHitCollection->entries();
 	PixelHit* pixelHit;
-	G4int N1 = PixelHitCollection->entries();
-	assert(N == N1);
+	assert(N == PixelHitCollection->entries());
 	
 	for(int i = 0; i < N; i++){
 		fiberHit = (*FiberHitCollection)[i];
@@ -61,9 +61,12 @@ void EventAction::EndOfEventAction(const G4Event* event){
 			fRunAction->SetEin(fiberHit->GetEin());
 			fRunAction->SetEdep(fiberHit->GetEdep());
 			fRunAction->SetEdelta(fiberHit->GetEdelta());
+			fRunAction->SetThetaIn(fThetaIn);
+			fRunAction->SetTrackLength(fTrackLength);
 			fRunAction->SetID(fEvID);
 			fRunAction->SetNgamma(fiberHit->GetNgamma() + fNgamma);
 			fRunAction->SetNgammaOut(fNgammaOut);
+			fRunAction->SetPrimaryChannel(fPrimaryChannel);
 			fRunAction->SetNAbs(fAbs);
 			fRunAction->SetNOut(fOut);
 			//fRunAction->SetNTransition(fTransition);

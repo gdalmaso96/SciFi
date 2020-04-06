@@ -42,7 +42,7 @@ void FiberSD::Initialize(G4HCofThisEvent* hitsCE){
 
 ///aStep->GetTrack()->GetParticleDefinition()->GetParticleName() == "e+" && 
 G4bool FiberSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
-	if(aStep->GetTrack()->GetTrackID() == 1){
+	if(aStep->GetTrack()->GetTrackID() == 1 && aStep->GetTrack()->GetDynamicParticle()->GetParticleDefinition()->GetParticleName() != "gamma"){
 		G4double edep = aStep->GetTotalEnergyDeposit();
 		G4double delta = aStep->GetPostStepPoint()->GetKineticEnergy() - aStep->GetPreStepPoint()->GetKineticEnergy() + edep; 
 
@@ -75,7 +75,7 @@ G4bool FiberSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 		eout = postStep->GetKineticEnergy();
 
 		if(postStep->GetStepStatus() == fGeomBoundary){
-			aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+//			aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 			return true;
 		}
 		else if (eout == 0.){
@@ -98,7 +98,7 @@ G4bool FiberSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 		}
 		return false;
 	}
-
+	return false;
 }
 
 void FiberSD::EndOfEvent(G4HCofThisEvent*){

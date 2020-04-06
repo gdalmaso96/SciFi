@@ -20,6 +20,14 @@ class EventAction : public G4UserEventAction{
 		virtual void BeginOfEventAction(const G4Event*);
 		virtual void   EndOfEventAction(const G4Event*);
 
+		inline void SetThetaIn(G4double val){fThetaIn = val;}
+		inline void AddTrackLength(G4double val){fTrackLength += val;}
+		inline void SetPrimaryChannel(G4int val){fPrimaryChannel = val;}
+
+		inline G4double GetThetaIn(){return fThetaIn;}
+		inline G4double GetTrackLength(){return fTrackLength;}
+		inline G4int GetPrimaryChannel(){return fPrimaryChannel;}
+
 		inline void AddGamma(){fNgamma++;}
 		inline void AddOut(){fNgammaOut++;}
 		inline void AddOutW(){fOut ++;}
@@ -30,6 +38,9 @@ class EventAction : public G4UserEventAction{
 
 		G4int fCollIDFiber;
 		G4int fCollIDSiPM;
+
+		G4double fThetaIn, fTrackLength;
+		G4int fPrimaryChannel;
 
 		G4int fOut, fAbs;
 		G4int fNgamma, fNgammaOut;

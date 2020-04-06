@@ -294,7 +294,7 @@ double SolveP5_1(double a,double b,double c,double d,double e)	// return real ro
 	double x0, f0;					// less than root
 	double x1, f1;					// greater than root
 	double x2, f2, f2s;				// next values, f(x2), f'(x2)
-	double dx;
+	double dx = 0;
 
 	if( e<0 ) { x0 =   0; x1 = brd; f0=e; f1=F5(x1); x2 = 0.01*brd; }	// positive root
 	else	  { x0 =-brd; x1 =   0; f0=F5(x0); f1=e; x2 =-0.01*brd; }	// negative root
