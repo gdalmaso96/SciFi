@@ -255,7 +255,7 @@ void createSignals(double threashold, TString file){
 	vector<double> activationTime;
 
 	int Channel = 0, Fiber = 0;
-	double signalTime, Amplitude = 0;
+	double signalTime, Amplitude = 0, Charge;
 
 	TGraph G;
 	
@@ -263,12 +263,14 @@ void createSignals(double threashold, TString file){
 	Twaves[0]->Branch("Channel", &Channel);
 	Twaves[0]->Branch("Fiber", &Fiber);
 	Twaves[0]->Branch("Amplitude", &Amplitude);
+	Twaves[0]->Branch("Charge", &Charge);
 	Twaves[0]->Branch("Time", &signalTime);
 
 	Twaves[1]->Branch("Signal", &G);
 	Twaves[1]->Branch("Channel", &Channel);
 	Twaves[1]->Branch("Fiber", &Fiber);
 	Twaves[1]->Branch("Amplitude", &Amplitude);
+	Twaves[1]->Branch("Charge", &Charge);
 	Twaves[1]->Branch("Time", &signalTime);
 
 	int thCheck = 0, timeCheck = - 30;
@@ -336,6 +338,7 @@ void createSignals(double threashold, TString file){
 					int l = 0;
 					double DeltaT = 0;
 					while(true){
+						Charge += (signal.at(int(deltaT/pitch/2) + l)) * pitch/1.96;
 						if(signal.at(int(deltaT/pitch/2) + l) < threashold){
 							DeltaT = signalT.at(int(deltaT/pitch/2) + l) - signalT.at(int(deltaT/pitch/2));
 							break;
@@ -344,6 +347,7 @@ void createSignals(double threashold, TString file){
 					}
 					Amplitude = TMath::MaxElement(int(DeltaT/pitch), &G.GetY()[int(deltaT/pitch/2)]);
 					Twaves[Channel]->Fill();
+					Charge = 0;
 				}
 				else if(signal.at(int(deltaT/pitch/2)) < threashold && thCheck == 1){
 // && signalT.at(int(deltaT/pitch/2)) - timeCheck> 10
@@ -381,6 +385,7 @@ void createSignals(double threashold, TString file){
 				int l = 0;
 				double DeltaT = 0;
 				while(true){
+					Charge += (signal.at(int(deltaT/pitch/2) + l)) * pitch/1.96;
 					if(signal.at(int(deltaT/pitch/2) + l) < threashold){
 						DeltaT = signalT.at(int(deltaT/pitch/2) + l) - signalT.at(int(deltaT/pitch/2));
 						break;
@@ -389,6 +394,7 @@ void createSignals(double threashold, TString file){
 				}
 				Amplitude = TMath::MaxElement(int(DeltaT/pitch), &G.GetY()[int(deltaT/pitch/2)]);
 				Twaves[Channel]->Fill();
+				Charge = 0;
 			}
 			else if(signal.at(int(deltaT/pitch/2)) < threashold && thCheck == 1){
 // && signalT.at(int(deltaT/pitch/2)) - timeCheck> 10
@@ -415,32 +421,37 @@ void reordering(TString file){
 	int Channel = 0;
 	int Fiber = 0;
 	double Amplitude = 0;
+	double Charge = 0;
 	double Time = 0;
 
 	int Channel0 = 0;
 	int Fiber0 = 0;
 	double Amplitude0 = 0;
+	double Charge0 = 0;
 	double Time0 = 0;
 
 	int Channel1 = 0;
 	int Fiber1 = 0;
 	double Amplitude1 = 0;
+	double Charge1 = 0;
 	double Time1 = 0;
 
 	T[0]->SetBranchAddress("Channel", &Channel0);
 	T[0]->SetBranchAddress("Fiber", &Fiber0);
 	T[0]->SetBranchAddress("Amplitude", &Amplitude0);
+	T[0]->SetBranchAddress("Charge", &Charge0);
 	T[0]->SetBranchAddress("Time", &Time0);
 
 	T[1]->SetBranchAddress("Channel", &Channel1);
 	T[1]->SetBranchAddress("Fiber", &Fiber1);
-	T[1]->SetBranchAddress("Amplitude", &Amplitude1);
+	T[1]->SetBranchAddress("Charge", &Charge1);
 	T[1]->SetBranchAddress("Time", &Time1);
 
 	TTree* Tnew = new TTree("new", "reordered");
 	Tnew->Branch("Channel", &Channel);
 	Tnew->Branch("Fiber", &Fiber);
 	Tnew->Branch("Amplitude", &Amplitude);
+	Tnew->Branch("Charge", &Charge);
 	Tnew->Branch("Time", &Time);
 
 	int i0 = 0, i1 = 0;
@@ -452,6 +463,7 @@ void reordering(TString file){
 			Channel = Channel1;
 			Fiber = Fiber1;
 			Amplitude = Amplitude1;
+			Charge = Charge1;
 			Time = Time1;
 			Tnew->Fill();
 			i1++;
@@ -462,6 +474,7 @@ void reordering(TString file){
 			Channel = Channel0;
 			Fiber = Fiber0;
 			Amplitude = Amplitude0;
+			Charge = Charge0;
 			Time = Time0;
 			Tnew->Fill();
 			i0++;
@@ -475,6 +488,7 @@ void reordering(TString file){
 				Channel = Channel0;
 				Fiber = Fiber0;
 				Amplitude = Amplitude0;
+				Charge = Charge0;
 				Time = Time0;
 				Tnew->Fill();
 				i0++;
@@ -484,6 +498,7 @@ void reordering(TString file){
 				Channel = Channel1;
 				Fiber = Fiber1;
 				Amplitude = Amplitude1;
+				Charge = Charge1;
 				Time = Time1;
 				Tnew->Fill();
 				i1++;
@@ -495,6 +510,7 @@ void reordering(TString file){
 	Tnew->Write("rwaves", TObject::kOverwrite);
 	F->Close();
 }
+
 void processing(double threashold, TString file){
 	TFile* F = TFile::Open(file + ".root");
 	TTree* T = (TTree*) F->Get("rwaves");
@@ -520,6 +536,49 @@ void processing(double threashold, TString file){
 			NCounts[Fiber]++;
 		}
 		else if(Time - activationTime[Fiber] > 20 && Amplitude > threashold){
+			preTime[Fiber] = Time;
+			preChannel[Fiber] = Channel;
+		}
+
+		if(deltaTime < Time) deltaTime = Time;
+	}
+
+	ofstream myfile;
+	myfile.open(file + ".txt");
+	for(int i = 0; i < 42; i++){
+		myfile << NCounts[i] << endl;
+	}
+	myfile << 0.22 << endl;
+	myfile << deltaTime << endl;
+	myfile.close();
+	F->Close();
+}
+
+void processingCharge(double threashold, TString file){
+	TFile* F = TFile::Open(file + ".root");
+	TTree* T = (TTree*) F->Get("rwaves");
+
+	double Charge = 0, Time = 0;
+	double activationTime[42] = {-30}, preTime[42] = {-30}, deltaTime = 0;
+	int Channel = 0, Fiber = 0, NCounts[42] = {0}, preChannel[42] = {0};
+
+	T->SetBranchAddress("Charge", &Charge);
+	T->SetBranchAddress("Time", &Time);
+	T->SetBranchAddress("Channel", &Channel);
+	T->SetBranchAddress("Fiber", &Fiber);
+
+	int n_entries = T->GetEntries();
+	for(int i = 0; i < n_entries; i++){
+		T->GetEntry(i);
+		if(preTime[Fiber] < 0 && Charge > threashold){
+			preTime[Fiber] = Time;
+			preChannel[Fiber] = Channel;
+		}
+		else if(Time - preTime[Fiber] < 20 && preChannel[Fiber] != Channel && Charge > threashold){
+			activationTime[Fiber] = Time;
+			NCounts[Fiber]++;
+		}
+		else if(Time - activationTime[Fiber] > 20 && Charge > threashold){
 			preTime[Fiber] = Time;
 			preChannel[Fiber] = Channel;
 		}

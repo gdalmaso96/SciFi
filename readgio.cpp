@@ -39,7 +39,7 @@ struct GlobalChi2 {
 
 
 int readSciFi(string filename) {
-   const float fibreWidth = 0.25; //mm
+   const float fiberWidth = 0.25; //mm
    const float separation = 5; //mm
 
    TF1* fit = 0;
@@ -108,9 +108,13 @@ int readSciFi(string filename) {
 
     TF1* fx = new TF1("fx","[0] * TMath::Gaus(x, [1], [2], 1)", -50, 50);
     TF1* fy = new TF1("fy","[0] * TMath::Gaus(x, [1], [2], 1)", -50, 50);
+//    TF1* fx = new TF1("fx",TString::Format("[0] / 2 /%f * (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2]))", fiberWidth, fiberWidth/2, fiberWidth/2), -50, 50);
+//    TF1* fy = new TF1("fy",TString::Format("[0] / 2 /%f * (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2]))", fiberWidth, fiberWidth/2, fiberWidth/2), -50, 50);
 
     TF2* fxy = new TF2("fxy", "[0] * TMath::Gaus(x, [1], [2], 1) * TMath::Gaus(y, [3], [4], 1)", -50, 50, -50, 50);
     
+//    TF2* fxy = new TF2("fxy", TString::Format("[0] / 4 /%f* (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2])) * (TMath::Erf((y + %f - [3])/sqrt(2)/[4]) - TMath::Erf((y - %f - [3])/sqrt(2)/[4]))", fiberWidth * fiberWidth, fiberWidth/2, fiberWidth/2, fiberWidth/2, fiberWidth/2), -50, 50, -50, 50);
+  
     cout << "Functions created" << endl;
     ROOT::Math::WrappedMultiTF1 wfX(*fx,1);
     ROOT::Math::WrappedMultiTF1 wfY(*fy,1);
@@ -173,9 +177,9 @@ int readSciFi(string filename) {
     TPaveText *xText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     xText->AddText(format("#mu = ", result.Parameter(1), result.ParError(1)));
     xText->AddText(format("#sigma = ", result.Parameter(2), result.ParError(2)));
-    xText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
-    xText->AddText(format("Rate = ", result.Parameter(0) / fibreWidth / time * 1e9, result.ParError(0) / fibreWidth / time * 1e9));
-    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fibreWidth /time * 1e9));
+    xText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
+    xText->AddText(format("Rate = ", result.Parameter(0) / fiberWidth / time * 1e9, result.ParError(0) / fiberWidth / time * 1e9));
+    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fiberWidth /time * 1e9));
     xText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
     //xText->SetTextSize(0.02);
     
@@ -199,9 +203,9 @@ int readSciFi(string filename) {
     TPaveText *yText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     yText->AddText(format("#mu = ", result.Parameter(3), result.ParError(3)));
     yText->AddText(format("#sigma = ", result.Parameter(4), result.ParError(4)));
-    yText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
-    yText->AddText(format("Rate = ",  result.Parameter(0) / fibreWidth / time * 1e9,  result.ParError(0) / fibreWidth / time * 1e9));
-    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9));
+    yText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
+    yText->AddText(format("Rate = ",  result.Parameter(0) / fiberWidth / time * 1e9,  result.ParError(0) / fiberWidth / time * 1e9));
+    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9));
     yText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
 
     gYProfile->GetListOfFunctions()->Add(fy);
@@ -217,7 +221,7 @@ int readSciFi(string filename) {
     legend->AddEntry(fxy, TString::Format("Fit: "), "");
     legend->AddEntry(fxy, format("     #mu = ( ", result.Parameter(1), result.ParError(1)) + format(", ", result.Parameter(3), result.ParError(3)) + ")", "");
     legend->AddEntry(fxy, format("     #sigma = ( ", result.Parameter(2), result.ParError(2)) + format(", ", result.Parameter(4), result.ParError(4)) + ")", "");
-    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9) + " mu/s", "");
+    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9) + " mu/s", "");
     legend->AddEntry(fxy, TString::Format("     Exposition time = %.1e #mus", time /1e3), "");
     TCanvas* cxy = new TCanvas((name + "xy").c_str(), "xyProfile");
     cxy->cd();
@@ -238,7 +242,7 @@ int readSciFi(string filename) {
 
 
 int readSciFi(string filename, double* R) {
-   const float fibreWidth = 0.25; //mm
+   const float fiberWidth = 0.25; //mm
    const float separation = 5; //mm
 
    TF1* fit = 0;
@@ -372,9 +376,9 @@ int readSciFi(string filename, double* R) {
     TPaveText *xText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     xText->AddText(format("#mu = ", result.Parameter(1), result.ParError(1)));
     xText->AddText(format("#sigma = ", result.Parameter(2), result.ParError(2)));
-    xText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
-    xText->AddText(format("Rate = ", result.Parameter(0) / fibreWidth / time * 1e9, result.ParError(0) / fibreWidth / time * 1e9));
-    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fibreWidth /time * 1e9));
+    xText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
+    xText->AddText(format("Rate = ", result.Parameter(0) / fiberWidth / time * 1e9, result.ParError(0) / fiberWidth / time * 1e9));
+    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fiberWidth /time * 1e9));
     xText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
     //xText->SetTextSize(0.02);
     
@@ -399,9 +403,9 @@ int readSciFi(string filename, double* R) {
     TPaveText *yText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     yText->AddText(format("#mu = ", result.Parameter(3), result.ParError(3)));
     yText->AddText(format("#sigma = ", result.Parameter(4), result.ParError(4)));
-    yText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
-    yText->AddText(format("Rate = ",  result.Parameter(0) / fibreWidth / time * 1e9,  result.ParError(0) / fibreWidth / time * 1e9));
-    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9));
+    yText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
+    yText->AddText(format("Rate = ",  result.Parameter(0) / fiberWidth / time * 1e9,  result.ParError(0) / fiberWidth / time * 1e9));
+    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9));
     yText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
 
     gYProfile->GetListOfFunctions()->Add(fy);
@@ -417,7 +421,7 @@ int readSciFi(string filename, double* R) {
     legend->AddEntry(fxy, TString::Format("Fit: "), "");
     legend->AddEntry(fxy, format("     #mu = ( ", result.Parameter(1), result.ParError(1)) + format(", ", result.Parameter(3), result.ParError(3)) + ")", "");
     legend->AddEntry(fxy, format("     #sigma = ( ", result.Parameter(2), result.ParError(2)) + format(", ", result.Parameter(4), result.ParError(4)) + ")", "");
-    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9) + " mu/s", "");
+    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9) + " mu/s", "");
     legend->AddEntry(fxy, TString::Format("     Exposition time = %.1e #mus", time /1e3), "");
     TCanvas* cxy = new TCanvas((name + "xy").c_str(), "xyProfile");
     cxy->cd();
@@ -432,8 +436,8 @@ int readSciFi(string filename, double* R) {
     cxy->SaveAs(("./fig/" + name + "gioXY.C").c_str());
     cxy->SaveAs(("./fig/" + name + "gioXY.pdf").c_str());
 
-    R[0] = 0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9;
-    R[1] = 0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9;
+    R[0] = 0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9;
+    R[1] = 0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9;
 
     return 0;
 }

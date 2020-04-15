@@ -294,7 +294,7 @@ G4bool PixelSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 				RunAction* action = (RunAction*) G4RunManager::GetRunManager()->GetUserRunAction();
 				G4double ptime = aStep->GetPreStepPoint()->GetGlobalTime() + action->GetGunTime();
 				G4int replica = int((localpos1.x() + 1.3/2)/1.3 * fNbOfPixelsX) + 
-				      fNbOfPixelsY * int((localpos1.y() + 1.3/2)/1.3 * fNbOfPixelsY);
+				      fNbOfPixelsX * int((localpos1.y() + 1.3/2)/1.3 * fNbOfPixelsY);
 
 			
 				if(fCmdDN){
