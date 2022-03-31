@@ -10,11 +10,11 @@ SciFi  simulation
 
 git clone this repo and create a build directory.
 
-<code> cd path-to-build
+<code> cd path-to-build </code>
 
-<code> cmake path-to-repo
+<code> cmake path-to-repo </code>
 
-<code> make -jN
+<code> make -jN </code>
 
 With N <= number of machine cores
 
