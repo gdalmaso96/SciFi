@@ -35,6 +35,12 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* Det) : G4UImessenger(
 	fFiberLengthCmd->SetUnitCategory("Length");
 	fFiberLengthCmd->AvailableForStates(G4State_Idle);
 	
+	fLayerDinstanceCmd = new G4UIcmdWithADoubleAndUnit("/SciFi/det/LayerDinstance", this);
+	fLayerDinstanceCmd->SetGuidance("Define layer dinstance");
+	fLayerDinstanceCmd->SetParameterName("LayerDinstance", false);
+	fLayerDinstanceCmd->SetUnitCategory("Length");
+	fLayerDinstanceCmd->AvailableForStates(G4State_Idle);
+	
 	fMaterialCmd = new G4UIcmdWithAString("/SciFi/det/Material", this);
 	fMaterialCmd->SetGuidance("Set scintillating material");
 	fMaterialCmd->SetParameterName("material", false);
@@ -50,6 +56,7 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* Det) : G4UImessenger(
 DetectorMessenger::~DetectorMessenger(){
 	delete fFiberWidthCmd;
 	delete fFiberLengthCmd;
+	delete fLayerDinstanceCmd;
 	delete fSiPMmodelCmd;
 	delete fMaterialCmd;
 	delete fSurfaceCmd;
@@ -63,6 +70,9 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue){
 	}
 	else if (command == fFiberLengthCmd){
 		fDetectorConstruction->SetLength(fFiberLengthCmd->GetNewDoubleValue(newValue));
+	}
+	else if (command == fLayerDinstanceCmd){
+		fDetectorConstruction->SetLayerDinstance(fLayerDinstanceCmd->GetNewDoubleValue(newValue));
 	}
 	else if (command == fMaterialCmd){
 		fDetectorConstruction->SetMaterial(newValue);

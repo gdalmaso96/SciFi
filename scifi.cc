@@ -14,7 +14,6 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "Randomize.hh"
-#include "G4TScoreNtupleWriter.hh"
 
 #include "G4Types.hh"
 
@@ -43,9 +42,6 @@ int main(int argc, char** argv){
 	// Set user action initialization
 	runManager->SetUserInitialization(new ActionInitialization());
 
-	//Initialize visualization
-	G4VisManager* visManager = new G4VisExecutive;
-	visManager->Initialize();
 
 	// Get the pointer to the User Interface manager
 	G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -58,20 +54,8 @@ int main(int argc, char** argv){
 				G4String fileName = argv[1];
 		UImanager->ApplyCommand(command + fileName);
 	}
-	else{
-		// interactive mode
-		UImanager->ApplyCommand("/control/execute init_vis.mac");
-		/*
-		if(ui->IsGUI()){
-		UImanager->ApplyCommand("/control/execute gui.mac");
-		}
-		*/
-		ui->SessionStart();
-		delete ui;
-	}
 
 	// Job termination
-	delete visManager;
 	delete runManager;
 }
 

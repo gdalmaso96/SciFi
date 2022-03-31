@@ -31,7 +31,7 @@ class FiberSD : public G4VSensitiveDetector{
 	private:
 		FiberHitsCollection* fFiberCollection;
 		G4double fEin, fEdep, fDelta;
-		G4int fNgamma, fNgammaOut;
+		G4int fNgamma, fNgammaOut, fSecondaryID;
 };
 
 #endif

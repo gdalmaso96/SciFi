@@ -23,10 +23,14 @@ class EventAction : public G4UserEventAction{
 		inline void SetThetaIn(G4double val){fThetaIn = val;}
 		inline void AddTrackLength(G4double val){fTrackLength += val;}
 		inline void SetPrimaryChannel(G4int val){fPrimaryChannel = val;}
+		inline void SetSecondaryChannel(G4int val){fSecondaryChannel = val;}
+		inline void SetSurfIn(G4int val){fSurfIn = val;}
 
 		inline G4double GetThetaIn(){return fThetaIn;}
 		inline G4double GetTrackLength(){return fTrackLength;}
 		inline G4int GetPrimaryChannel(){return fPrimaryChannel;}
+		inline G4int GetSecondaryChannel(){return fSecondaryChannel;}
+		inline G4int GetSurfIn(){return fSurfIn;}
 
 		inline void AddGamma(){fNgamma++;}
 		inline void AddOut(){fNgammaOut++;}
@@ -41,6 +45,8 @@ class EventAction : public G4UserEventAction{
 
 		G4double fThetaIn, fTrackLength;
 		G4int fPrimaryChannel;
+		G4int fSecondaryChannel;
+		G4int fSurfIn;
 
 		G4int fOut, fAbs;
 		G4int fNgamma, fNgammaOut;

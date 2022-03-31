@@ -44,6 +44,9 @@ void RunAction::BeginOfRunAction(const G4Run*){
 	fTree->Branch("Ngamma", &fNgamma);
 	fTree->Branch("NgammaOut", &fNgammaOut);
 	fTree->Branch("PrimaryChannel", &fPrimaryChannel);
+	fTree->Branch("SecondaryChannel", &fSecondaryChannel);
+	fTree->Branch("SecondaryID", &fSecondaryID);
+	fTree->Branch("SurfIn", &fSurfIn);
 	fTree->Branch("Out", &fOut);
 	fTree->Branch("Abs", &fAbs);
 //	fTree->Branch("Transition", &fTransition);

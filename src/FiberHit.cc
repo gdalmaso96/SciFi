@@ -8,7 +8,7 @@
 
 G4ThreadLocal G4Allocator<FiberHit>* FiberHitAllocator = nullptr;
 
-FiberHit::FiberHit() : fEin(0.), fEdep(0.), fDelta(0), fNgamma(0), fNgammaOut(0), fPhysVol(nullptr){}
+FiberHit::FiberHit() : fEin(0.), fEdep(0.), fDelta(0), fNgamma(0), fNgammaOut(0), fSecondaryID(-1), fPhysVol(nullptr){}
 
 FiberHit::FiberHit(G4VPhysicalVolume* pVol) : fPhysVol(pVol){}
 
@@ -20,6 +20,7 @@ FiberHit::FiberHit(const FiberHit &right) : G4VHit(){
 	fDelta = right.fDelta;
 	fNgamma = right.fNgamma;
 	fNgammaOut = right.fNgammaOut;
+	fSecondaryID = right.fSecondaryID;
 	fPhysVol = right.fPhysVol;
 }
 
@@ -29,6 +30,7 @@ const FiberHit& FiberHit::operator=(const FiberHit &right){
 	fDelta = right.fDelta;
 	fNgamma = right.fNgamma;
 	fNgammaOut = right.fNgammaOut;
+	fSecondaryID = right.fSecondaryID;
 	return* this;
 }
 

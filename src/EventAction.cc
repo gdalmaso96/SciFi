@@ -26,6 +26,9 @@ void EventAction::BeginOfEventAction(const G4Event* event){
 	fNgammaOut = 0;
 	fOut = 0;
 	fAbs = 0;
+	fPrimaryChannel = -1;
+	fSecondaryChannel = -1;
+	fSurfIn = -1;
 	fEventID = event->GetEventID();
 }
 
@@ -67,6 +70,9 @@ void EventAction::EndOfEventAction(const G4Event* event){
 			fRunAction->SetNgamma(fiberHit->GetNgamma() + fNgamma);
 			fRunAction->SetNgammaOut(fNgammaOut);
 			fRunAction->SetPrimaryChannel(fPrimaryChannel);
+			fRunAction->SetSecondaryChannel(fSecondaryChannel);
+			fRunAction->SetSecondaryID(fiberHit->GetSecondaryID());
+			fRunAction->SetSurfIn(fSurfIn);
 			fRunAction->SetNAbs(fAbs);
 			fRunAction->SetNOut(fOut);
 			//fRunAction->SetNTransition(fTransition);

@@ -109,28 +109,40 @@ void SteppingAction::UserSteppingAction(const G4Step * aStep){
 					if(std::fabs(localPos.x() - dimensionx) < kCarTolerance &&
 					   momentumDir.x() < 0){
 						fEvent->SetThetaIn(acos(-momentumDir.x()));
+						fEvent->SetSurfIn(0);
 					}
 					else if(std::fabs(localPos.x() + dimensionx) < kCarTolerance &&
 					   momentumDir.x() > 0){
 						fEvent->SetThetaIn(acos(momentumDir.x()));
+						fEvent->SetSurfIn(1);
 					}
 					else if(std::fabs(localPos.y() - dimensiony) < kCarTolerance &&
 					   momentumDir.y() < 0){
 						fEvent->SetThetaIn(acos(-momentumDir.y()));
+						fEvent->SetSurfIn(2);
 					}
 					else if(std::fabs(localPos.y() + dimensiony) < kCarTolerance &&
 					   momentumDir.y() > 0){
 						fEvent->SetThetaIn(acos(momentumDir.y()));
+						fEvent->SetSurfIn(3);
 					}
 					else if(std::fabs(localPos.z() - dimensionz) < kCarTolerance &&
 					   momentumDir.z() < 0){
 						fEvent->SetThetaIn(acos(-momentumDir.z()));
+						fEvent->SetSurfIn(4);
 					}
 					else if(std::fabs(localPos.z() + dimensionz) < kCarTolerance &&
 					   momentumDir.z() > 0){
 						fEvent->SetThetaIn(acos(momentumDir.z()));
+						fEvent->SetSurfIn(5);
 					}
-					fEvent->SetPrimaryChannel(thePreTouchable->GetReplicaNumber(2));
+					
+					if(fEvent->GetPrimaryChannel() == -1){
+						fEvent->SetPrimaryChannel(thePreTouchable->GetReplicaNumber(2));
+					}
+					else if(thePreTouchable->GetReplicaNumber(2) != fEvent->GetPrimaryChannel()){
+						fEvent->SetSecondaryChannel(thePreTouchable->GetReplicaNumber(2));
+					}
 				}
 			}
 		}

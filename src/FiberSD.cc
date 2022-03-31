@@ -22,7 +22,7 @@
 
 #include "TVector3.h"
 
-FiberSD::FiberSD(G4String name) : G4VSensitiveDetector(name), fEin(0), fEdep(0), fDelta(0), fNgamma(0), fNgammaOut(0){
+FiberSD::FiberSD(G4String name) : G4VSensitiveDetector(name), fEin(0), fEdep(0), fDelta(0), fNgamma(0), fNgammaOut(0), fSecondaryID(-1){
 	fFiberCollection = nullptr;
 	collectionName.insert("fiberCollection");
 }
@@ -87,6 +87,7 @@ G4bool FiberSD::ProcessHits(G4Step *aStep, G4TouchableHistory*){
 	}
 	else if(aStep->GetTrack()->GetParticleDefinition() != G4OpticalPhoton::OpticalPhotonDefinition()) {
 		const std::vector<const G4Track*>* secondaries = aStep->GetSecondaryInCurrentStep();
+		fSecondaryID = aStep->GetTrack()->GetDynamicParticle()->GetPDGcode();
 		if(secondaries->size() > 0){
 			for(unsigned int i = 0; i < secondaries->size(); i++){
 				if(secondaries->at(i)->GetParentID() > 0){
@@ -108,12 +109,14 @@ void FiberSD::EndOfEvent(G4HCofThisEvent*){
 	Hit->SetEdelta(fDelta);
 	Hit->SetNgamma(fNgamma);
 //	Hit->SetNgammaOut(fNgammaOut);
+	Hit->SetSecondaryID(fSecondaryID);
 	fFiberCollection->insert(Hit);
 	fEdep = 0;
 	fEin = 0;
 	fDelta = 0;
 	fNgamma = 0;
 	fNgammaOut = 0;
+	fSecondaryID = -1;
 }
 
 void FiberSD::clear(){}

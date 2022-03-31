@@ -36,10 +36,12 @@ class FiberHit : public G4VHit{
 		inline void SetEin (G4double val){fEin  = val;}
 		inline void SetEdep(G4double val){fEdep = val;}
 		inline void SetEdelta(G4double val){fDelta = val;}
+		inline void SetSecondaryID(G4int val){fSecondaryID = val;}
 		
 		inline G4double GetEin (){return fEin;}
 		inline G4double GetEdep(){return fEdep;}
 		inline G4double GetEdelta(){return fDelta;}
+		inline G4int GetSecondaryID(){return fSecondaryID;}
 
 		inline void SetNgamma(G4int val){fNgamma = val;}
 		inline G4int GetNgamma(){return fNgamma;}
@@ -47,12 +49,12 @@ class FiberHit : public G4VHit{
 		inline void SetNgammaOut(G4int val){fNgammaOut = val;}
 		inline G4int GetNgammaOut(){return fNgammaOut;}
 
-		inline void Clear(){fEin = 0; fEdep = 0; fDelta = 0; fThetaIn = 0; fNgamma = 0; fNgammaOut = 0; fPrimaryChannel = 0;}
+		inline void Clear(){fEin = 0; fEdep = 0; fDelta = 0; fThetaIn = 0; fNgamma = 0; fNgammaOut = 0; fPrimaryChannel = 0; fSecondaryID = -1;}
 		inline const G4VPhysicalVolume* GetPhysV(){return fPhysVol;}
 
 	private:
 		G4double fEin, fEdep, fDelta, fThetaIn;
-		G4int fNgamma, fNgammaOut, fPrimaryChannel;
+		G4int fNgamma, fNgammaOut, fPrimaryChannel, fSecondaryID;
 		const G4VPhysicalVolume* fPhysVol;
 };
 

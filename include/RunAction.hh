@@ -47,6 +47,9 @@ class RunAction : public G4UserRunAction {
 		void SetNgamma(int val){fNgamma = val;}
 		void SetNgammaOut(int val){fNgammaOut = val;}
 		void SetPrimaryChannel(int val){fPrimaryChannel = val;}
+		void SetSecondaryChannel(int val){fSecondaryChannel = val;}
+		void SetSecondaryID(int val){fSecondaryID = val;}
+		void SetSurfIn(int val){fSurfIn = val;}
 		void SetNAbs(int val){fAbs = val;}
 		void SetNOut(int val){fOut = val;}
 
@@ -85,6 +88,9 @@ class RunAction : public G4UserRunAction {
 		G4double fTrackLength;
 		G4int fID;
 		G4int fPrimaryChannel;
+		G4int fSecondaryChannel;
+		G4int fSecondaryID;
+		G4int fSurfIn;
 
 		std::vector<G4int> fChannel;
 

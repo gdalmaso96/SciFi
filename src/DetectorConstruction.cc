@@ -33,7 +33,7 @@
 #include "G4GenericMessenger.hh"
 
 /// Constructor
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fFiberWidth(0.25*mm), fFiberLength(20*cm),fSiPM_sizeXY(1.3*mm), fCheckOverlaps(true), fCmdSurface(false){
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fFiberWidth(0.25*mm), fFiberLength(20*cm), fLayerDinstance(5*mm), fSiPM_sizeXY(1.3*mm), fCheckOverlaps(true), fCmdSurface(false){
 	fDetectorMessenger = new DetectorMessenger(this);
 	DefineMaterials();
 	SetSiPMmodel("50CS");
@@ -380,7 +380,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 	// World
 	G4double world_sizeX = fFiberLength + 2*fSiPM_sizeZ + fSiPM_windowZ + 2*mm;
 	G4double world_sizeY = fFiberLength + 2*fSiPM_sizeZ + fSiPM_windowZ + 2*mm;
-	G4double world_sizeZ = 2 * fSiPM_sizeXY + 7*mm;
+	G4double world_sizeZ = 2 * fSiPM_sizeXY + fLayerDinstance + 2*mm;
 
 	// World
 	G4Box* SolidWorld = new G4Box("World", 0.5*world_sizeX, 0.5*world_sizeY, 0.5*world_sizeZ);
@@ -395,20 +395,26 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 	
 	// Core
 	G4Box* solidCore = new G4Box("Core", 0.5 * fFiberWidth * 0.94,
-				              0.5 * fFiberLength * 0.94,
+				              0.5 * fFiberLength,
+					      0.5 * fFiberWidth * 0.94);
+	G4Box* solidCoreLong = new G4Box("CoreLong", 0.5 * fFiberWidth * 0.94,
+				              0.5 * fFiberLength + 0.01*mm,
 					      0.5 * fFiberWidth * 0.94);
 	G4LogicalVolume* logicCore = new G4LogicalVolume(solidCore, fMaterial, "Core");
 	fLogicFiber = logicCore;
 
 	// First Cladding
 	G4Box* temp = new G4Box("Temp",  0.5 * fFiberWidth * 0.98,
-			                 0.5 * fFiberLength * 0.98,
+			                 0.5 * fFiberLength,
 				         0.5 * fFiberWidth * 0.98);
-	G4SubtractionSolid* solidClad = new G4SubtractionSolid("fClad", temp, solidCore, 0, G4ThreeVector());
+	G4Box* tempLong = new G4Box("TempLong",  0.5 * fFiberWidth * 0.98,
+			                 0.5 * fFiberLength + 0.01*mm,
+				         0.5 * fFiberWidth * 0.98);
+	G4SubtractionSolid* solidClad = new G4SubtractionSolid("fClad", temp, solidCoreLong, 0, G4ThreeVector());
 	G4LogicalVolume* logicFClad = new G4LogicalVolume(solidClad, fFClad, "fClad");
 
 	// Second Cladding
-	G4SubtractionSolid* solidSClad = new G4SubtractionSolid("sClad", solidFiber, temp, 0, G4ThreeVector());
+	G4SubtractionSolid* solidSClad = new G4SubtractionSolid("sClad", solidFiber, tempLong, 0, G4ThreeVector());
 	G4LogicalVolume* logicSClad = new G4LogicalVolume(solidSClad, fSClad, "sClad");
 
 	// SiPM
@@ -425,7 +431,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 	fLogicPixel = logicPixel;
 
 	// Element
-	G4Box* solidElement = new G4Box("Element", 0.5 * fSiPM_sizeXY, 0.5 * (fFiberLength + fSiPM_sizeZ + fSiPM_windowZ), 0.5 * fSiPM_sizeXY);
+	G4Box* solidElement = new G4Box("Element", 0.5 * fSiPM_sizeXY, 0.5 * (fFiberLength) + fSiPM_sizeZ + fSiPM_windowZ, 0.5 * fSiPM_sizeXY);
 	G4LogicalVolume* logicElement = new G4LogicalVolume(solidElement, fVacuum, "Element");
 	// Placing volumes
 
@@ -454,7 +460,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 	G4double fibersDinstance = 5*mm;
 	// Vertical Fibers
 	for(int i = 0; i < 21; i++){
-		G4ThreeVector posFiber = G4ThreeVector(-5*cm + fibersDinstance * i, 0, -2.5*mm);
+		G4ThreeVector posFiber = G4ThreeVector(-5*cm + fibersDinstance * i, 0, -fLayerDinstance*0.5);
 		new G4PVPlacement(0, posFiber, logicElement, "Element", logicWorld, false, i, fCheckOverlaps);
 	}
 
@@ -464,7 +470,7 @@ G4VPhysicalVolume* DetectorConstruction::DefineVolumes(){
 	Rotation->rotateY(0.*deg);
 	Rotation->rotateZ(90*deg);
 	for(int i = 0; i < 21; i++){
-		G4ThreeVector posFiber = G4ThreeVector(0, 5*cm - fibersDinstance * i, 2.5*mm);
+		G4ThreeVector posFiber = G4ThreeVector(0, 5*cm - fibersDinstance * i, fLayerDinstance*0.5);
 		new G4PVPlacement(Rotation, posFiber, logicElement, "Element", logicWorld, false, i + 21, fCheckOverlaps);
 	}		
 
@@ -525,6 +531,12 @@ void DetectorConstruction::SetWidth(G4double size){
 
 void DetectorConstruction::SetLength(G4double size){
 	fFiberLength = size;
+
+	G4RunManager::GetRunManager()->ReinitializeGeometry();
+}
+
+void DetectorConstruction::SetLayerDinstance(G4double size){
+	fLayerDinstance = size;
 
 	G4RunManager::GetRunManager()->ReinitializeGeometry();
 }

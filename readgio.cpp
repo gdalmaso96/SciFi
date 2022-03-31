@@ -39,7 +39,7 @@ struct GlobalChi2 {
 
 
 int readSciFi(string filename) {
-   const float fiberWidth = 0.25; //mm
+   const float fibreWidth = 0.25; //mm
    const float separation = 5; //mm
 
    TF1* fit = 0;
@@ -108,13 +108,9 @@ int readSciFi(string filename) {
 
     TF1* fx = new TF1("fx","[0] * TMath::Gaus(x, [1], [2], 1)", -50, 50);
     TF1* fy = new TF1("fy","[0] * TMath::Gaus(x, [1], [2], 1)", -50, 50);
-//    TF1* fx = new TF1("fx",TString::Format("[0] / 2 /%f * (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2]))", fiberWidth, fiberWidth/2, fiberWidth/2), -50, 50);
-//    TF1* fy = new TF1("fy",TString::Format("[0] / 2 /%f * (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2]))", fiberWidth, fiberWidth/2, fiberWidth/2), -50, 50);
 
     TF2* fxy = new TF2("fxy", "[0] * TMath::Gaus(x, [1], [2], 1) * TMath::Gaus(y, [3], [4], 1)", -50, 50, -50, 50);
     
-//    TF2* fxy = new TF2("fxy", TString::Format("[0] / 4 /%f* (TMath::Erf((x + %f - [1])/sqrt(2)/[2]) - TMath::Erf((x - %f - [1])/sqrt(2)/[2])) * (TMath::Erf((y + %f - [3])/sqrt(2)/[4]) - TMath::Erf((y - %f - [3])/sqrt(2)/[4]))", fiberWidth * fiberWidth, fiberWidth/2, fiberWidth/2, fiberWidth/2, fiberWidth/2), -50, 50, -50, 50);
-  
     cout << "Functions created" << endl;
     ROOT::Math::WrappedMultiTF1 wfX(*fx,1);
     ROOT::Math::WrappedMultiTF1 wfY(*fy,1);
@@ -177,9 +173,9 @@ int readSciFi(string filename) {
     TPaveText *xText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     xText->AddText(format("#mu = ", result.Parameter(1), result.ParError(1)));
     xText->AddText(format("#sigma = ", result.Parameter(2), result.ParError(2)));
-    xText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
-    xText->AddText(format("Rate = ", result.Parameter(0) / fiberWidth / time * 1e9, result.ParError(0) / fiberWidth / time * 1e9));
-    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fiberWidth /time * 1e9));
+    xText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
+    xText->AddText(format("Rate = ", result.Parameter(0) / fibreWidth / time * 1e9, result.ParError(0) / fibreWidth / time * 1e9));
+    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fibreWidth /time * 1e9));
     xText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
     //xText->SetTextSize(0.02);
     
@@ -203,9 +199,9 @@ int readSciFi(string filename) {
     TPaveText *yText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     yText->AddText(format("#mu = ", result.Parameter(3), result.ParError(3)));
     yText->AddText(format("#sigma = ", result.Parameter(4), result.ParError(4)));
-    yText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
-    yText->AddText(format("Rate = ",  result.Parameter(0) / fiberWidth / time * 1e9,  result.ParError(0) / fiberWidth / time * 1e9));
-    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9));
+    yText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
+    yText->AddText(format("Rate = ",  result.Parameter(0) / fibreWidth / time * 1e9,  result.ParError(0) / fibreWidth / time * 1e9));
+    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9));
     yText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
 
     gYProfile->GetListOfFunctions()->Add(fy);
@@ -221,7 +217,7 @@ int readSciFi(string filename) {
     legend->AddEntry(fxy, TString::Format("Fit: "), "");
     legend->AddEntry(fxy, format("     #mu = ( ", result.Parameter(1), result.ParError(1)) + format(", ", result.Parameter(3), result.ParError(3)) + ")", "");
     legend->AddEntry(fxy, format("     #sigma = ( ", result.Parameter(2), result.ParError(2)) + format(", ", result.Parameter(4), result.ParError(4)) + ")", "");
-    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9) + " mu/s", "");
+    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9) + " mu/s", "");
     legend->AddEntry(fxy, TString::Format("     Exposition time = %.1e #mus", time /1e3), "");
     TCanvas* cxy = new TCanvas((name + "xy").c_str(), "xyProfile");
     cxy->cd();
@@ -242,7 +238,7 @@ int readSciFi(string filename) {
 
 
 int readSciFi(string filename, double* R) {
-   const float fiberWidth = 0.25; //mm
+   const float fibreWidth = 0.25; //mm
    const float separation = 5; //mm
 
    TF1* fit = 0;
@@ -376,9 +372,9 @@ int readSciFi(string filename, double* R) {
     TPaveText *xText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     xText->AddText(format("#mu = ", result.Parameter(1), result.ParError(1)));
     xText->AddText(format("#sigma = ", result.Parameter(2), result.ParError(2)));
-    xText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
-    xText->AddText(format("Rate = ", result.Parameter(0) / fiberWidth / time * 1e9, result.ParError(0) / fiberWidth / time * 1e9));
-    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fiberWidth /time * 1e9));
+    xText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
+    xText->AddText(format("Rate = ", result.Parameter(0) / fibreWidth / time * 1e9, result.ParError(0) / fibreWidth / time * 1e9));
+    xText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth /time * 1e9, 0.22 / beamRate * result.ParError(0) / fibreWidth /time * 1e9));
     xText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
     //xText->SetTextSize(0.02);
     
@@ -403,9 +399,9 @@ int readSciFi(string filename, double* R) {
     TPaveText *yText = new TPaveText(0.65, 0.6, 0.9, 0.9, "brNDC");
     yText->AddText(format("#mu = ", result.Parameter(3), result.ParError(3)));
     yText->AddText(format("#sigma = ", result.Parameter(4), result.ParError(4)));
-    yText->AddText(format("Ntot = ", result.Parameter(0) / fiberWidth, result.ParError(0) / fiberWidth));
-    yText->AddText(format("Rate = ",  result.Parameter(0) / fiberWidth / time * 1e9,  result.ParError(0) / fiberWidth / time * 1e9));
-    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9));
+    yText->AddText(format("Ntot = ", result.Parameter(0) / fibreWidth, result.ParError(0) / fibreWidth));
+    yText->AddText(format("Rate = ",  result.Parameter(0) / fibreWidth / time * 1e9,  result.ParError(0) / fibreWidth / time * 1e9));
+    yText->AddText(format("Normalized Rate = ",  0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,  0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9));
     yText->AddText(TString::Format("Exposition time = %.1e #mus", time /1e3));
 
     gYProfile->GetListOfFunctions()->Add(fy);
@@ -421,7 +417,7 @@ int readSciFi(string filename, double* R) {
     legend->AddEntry(fxy, TString::Format("Fit: "), "");
     legend->AddEntry(fxy, format("     #mu = ( ", result.Parameter(1), result.ParError(1)) + format(", ", result.Parameter(3), result.ParError(3)) + ")", "");
     legend->AddEntry(fxy, format("     #sigma = ( ", result.Parameter(2), result.ParError(2)) + format(", ", result.Parameter(4), result.ParError(4)) + ")", "");
-    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9) + " mu/s", "");
+    legend->AddEntry(fxy, format("     Rate = ",   0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9,   0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9) + " mu/s", "");
     legend->AddEntry(fxy, TString::Format("     Exposition time = %.1e #mus", time /1e3), "");
     TCanvas* cxy = new TCanvas((name + "xy").c_str(), "xyProfile");
     cxy->cd();
@@ -436,8 +432,8 @@ int readSciFi(string filename, double* R) {
     cxy->SaveAs(("./fig/" + name + "gioXY.C").c_str());
     cxy->SaveAs(("./fig/" + name + "gioXY.pdf").c_str());
 
-    R[0] = 0.22 / beamRate * result.Parameter(0) / fiberWidth / time * 1e9;
-    R[1] = 0.22 / beamRate * result.ParError(0) / fiberWidth / time * 1e9;
+    R[0] = 0.22 / beamRate * result.Parameter(0) / fibreWidth / time * 1e9;
+    R[1] = 0.22 / beamRate * result.ParError(0) / fibreWidth / time * 1e9;
 
     return 0;
 }
@@ -527,8 +523,8 @@ int readMatrix(string filename) {
 
 //    Float_t Ntot = 2 * TMath::Pi() * fit->Eval(theFit->GetParameter(1), theFit->GetParameter(3)) * theFit->GetParameter(2) * theFit->GetParameter(4) * TMath::Sqrt(1 - theFit->GetParameter(5) * theFit->GetParameter(5)) / (crystalSize * crystalSize);
     Float_t Ntot = theFit->GetParameter(0) / (crystalSize * crystalSize);
-    Float_t muonRate = Ntot * 0.22 / beamRate / time * 1e9;
-    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time * 1e9;
+    Float_t muonRate = Ntot * 0.22 / beamRate / time;
+    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time;
 
 	std::cout << muonRate << " " << dMuonRate << std::endl;
 
@@ -537,7 +533,113 @@ int readMatrix(string filename) {
     legend->AddEntry(fit, format("     #mu = (", theFit->GetParameter(1), theFit->GetParError(1)) + format(", ", theFit->GetParameter(3), theFit->GetParError(3)) + ") mm", "");
     legend->AddEntry(fit, format("     #sigma = (", theFit->GetParameter(2), theFit->GetParError(2)) + format(", ", theFit->GetParameter(4), theFit->GetParError(4)) + ") mm", "");
     legend->AddEntry(fit, format("     Rate = ", muonRate, dMuonRate) +" mu/s", "");
-    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time/1e3) +" #mus", "");
+    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time*1e6) +" #mus", "");
+    TCanvas* c2 = new TCanvas((name + "2d" ).c_str(), name.c_str());
+    fit->SetTitle((name + "Beam Profile;x [mm];y [mm];Rate [Hz]" ).c_str());
+    fit->Draw("surf2");
+    legend->Draw();
+
+    cout << "stdv X: " << theFit->GetParameter(2) << " +- " << fit->GetParError(2) << endl;
+    cout << "stdv y: " << theFit->GetParameter(4) << " +- " << fit->GetParError(4) << endl;
+    cout << "xy cor: " << theFit->GetParameter(5) << " +- " << fit->GetParError(5) << endl;
+    cout << "Ntot: " << Ntot << endl;
+    cout << "Beam rate: " << beamRate << endl;
+    cout << "Rate: " << muonRate << " mu / s" << endl;
+    cout << "Time: " << time << endl;
+
+    c1->SaveAs(("./fig/" + name + "profile.C").c_str());
+    c1->SaveAs(("./fig/" + name + "profile.pdf").c_str());
+    c2->SaveAs(("./fig/" + name + "2dprofile.C").c_str());
+    c2->SaveAs(("./fig/" + name + "2dprofile.pdf").c_str());
+
+    ROOT::Math::MinimizerOptions::SetDefaultMinimizer(oldMeth.c_str(), oldAlgo.c_str());
+    return 0;
+}
+
+int readMatrix(string filename, double xCrys, double yCrys) {
+    const float crystalSize = sqrt(xCrys*yCrys); // mm
+
+    float time = 0;
+    float beamRate = 0;
+
+    ifstream file(filename);
+
+    string name = filename;
+
+    size_t pos = name.rfind('/');
+    if (pos != string::npos) name.replace(0, pos + 1, "");
+    pos = name.rfind('.');
+    if (pos != string::npos) name.replace(pos, name.length(), "");
+
+    string line;
+
+    TGraph2D *profile = new TGraph2D;
+    profile->SetName((name + "profile").c_str());
+    profile->SetTitle("Beam Profile;x (in mm);y (in mm)");
+
+    TH2Poly *prof2 = getMatrixLayout((name + "poly").c_str());
+
+    Double_t value = 0;
+    // Read the file data
+    Int_t iBin = 0;
+    Float_t x = -25.05;
+    Float_t y = 25;
+
+    while(file >> value) {
+        if (iBin < 81) {
+	 profile->SetPoint(iBin, x + 6 * (iBin % 9) + 1, y - 6 * (iBin / 9) - 1, value); 
+	 prof2->Fill(x + 6 * (iBin % 9) + 1, y - 6 * (iBin / 9) - 1, value);
+            ++iBin;
+        } else if (iBin == 81) {
+	 beamRate = value;
+	 ++iBin;
+        } else if (iBin == 82) {
+	 time = value;
+	 ++iBin;
+        }
+        
+    }
+
+    string oldAlgo = ROOT::Math::MinimizerOptions::DefaultMinimizerAlgo();
+    string oldMeth = ROOT::Math::MinimizerOptions::DefaultMinimizerType();
+
+    ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Fumili");
+
+    TF2* fit = new TF2("fit", "bigaus", -50, 50, -50 ,50);
+    // Starting Parameters for fit - they might need some adaption to the specific profile.
+    fit->SetParameters(profile->GetMaximum(), 0, 6, 0, 18, 0.1);
+    //fit->SetParLimits(1, -25, 25);
+    //fit->SetParLimits(2, 0, 20);
+    //fit->SetParLimits(3, -25, 25);
+    //fit->SetParLimits(4, 0, 20);
+    //fit->SetParLimits(6, -1, 1);
+    profile->Fit(fit, "P0");
+
+
+    TF2* theFit = (TF2*)profile->FindObject("fit");
+    Float_t N = theFit->GetMaximum();
+    theFit->SetContour(7);
+    for (int i = 0; i < 7; ++i) theFit->SetContourLevel(i, N * TMath::Gaus(3 - 0.5 * i));
+    TCanvas* c1 = new TCanvas(name.c_str() , name.c_str(), 800, 800);
+
+    prof2->Draw("col");
+    theFit->Draw("same cont3");
+
+    // Some calculations:
+
+//    Float_t Ntot = 2 * TMath::Pi() * fit->Eval(theFit->GetParameter(1), theFit->GetParameter(3)) * theFit->GetParameter(2) * theFit->GetParameter(4) * TMath::Sqrt(1 - theFit->GetParameter(5) * theFit->GetParameter(5)) / (crystalSize * crystalSize);
+    Float_t Ntot = theFit->GetParameter(0) / (crystalSize * crystalSize);
+    Float_t muonRate = Ntot * 0.22 / beamRate / time;
+    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time;
+
+	std::cout << muonRate << " " << dMuonRate << std::endl;
+
+    TLegend* legend = new TLegend(0.5,0.7,0.9,0.9);
+    legend->AddEntry(fit, TString::Format("Fit: "), "");
+    legend->AddEntry(fit, format("     #mu = (", theFit->GetParameter(1), theFit->GetParError(1)) + format(", ", theFit->GetParameter(3), theFit->GetParError(3)) + ") mm", "");
+    legend->AddEntry(fit, format("     #sigma = (", theFit->GetParameter(2), theFit->GetParError(2)) + format(", ", theFit->GetParameter(4), theFit->GetParError(4)) + ") mm", "");
+    legend->AddEntry(fit, format("     Rate = ", muonRate, dMuonRate) +" mu/s", "");
+    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time*1e6) +" #mus", "");
     TCanvas* c2 = new TCanvas((name + "2d" ).c_str(), name.c_str());
     fit->SetTitle((name + "Beam Profile;x [mm];y [mm];Rate [Hz]" ).c_str());
     fit->Draw("surf2");
@@ -634,8 +736,8 @@ int readMatrix(string filename, double *R) {
 
 //    Float_t Ntot = 2 * TMath::Pi() * fit->Eval(theFit->GetParameter(1), theFit->GetParameter(3)) * theFit->GetParameter(2) * theFit->GetParameter(4) * TMath::Sqrt(1 - theFit->GetParameter(5) * theFit->GetParameter(5)) / (crystalSize * crystalSize);
     Float_t Ntot = theFit->GetParameter(0) / (crystalSize * crystalSize);
-    Float_t muonRate = Ntot * 0.22 / beamRate / time * 1e9;
-    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time * 1e9;
+    Float_t muonRate = Ntot * 0.22 / beamRate / time;
+    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time;
 
 	std::cout << muonRate << " " << dMuonRate << std::endl;
 
@@ -644,7 +746,116 @@ int readMatrix(string filename, double *R) {
     legend->AddEntry(fit, format("     #mu = (", theFit->GetParameter(1), theFit->GetParError(1)) + format(", ", theFit->GetParameter(3), theFit->GetParError(3)) + ") mm", "");
     legend->AddEntry(fit, format("     #sigma = (", theFit->GetParameter(2), theFit->GetParError(2)) + format(", ", theFit->GetParameter(4), theFit->GetParError(4)) + ") mm", "");
     legend->AddEntry(fit, format("     Rate = ", muonRate, dMuonRate) +" mu/s", "");
-    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time/1e3) +" #mus", "");
+    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time*1e6) +" #mus", "");
+    TCanvas* c2 = new TCanvas((name + "2d" ).c_str(), name.c_str());
+    fit->SetTitle((name + "Beam Profile;x [mm];y [mm];Rate [Hz]" ).c_str());
+    fit->Draw("surf2");
+    legend->Draw();
+
+    R[0] = muonRate;
+    R[1] = dMuonRate;
+
+    cout << "stdv X: " << theFit->GetParameter(2) << " +- " << fit->GetParError(2) << endl;
+    cout << "stdv y: " << theFit->GetParameter(4) << " +- " << fit->GetParError(4) << endl;
+    cout << "xy cor: " << theFit->GetParameter(5) << " +- " << fit->GetParError(5) << endl;
+    cout << "Ntot: " << Ntot << endl;
+    cout << "Beam rate: " << beamRate << endl;
+    cout << "Rate: " << muonRate << " mu / s" << endl;
+    cout << "Time: " << time << endl;
+
+    c1->SaveAs(("./fig/" + name + "profile.C").c_str());
+    c1->SaveAs(("./fig/" + name + "profile.pdf").c_str());
+    c2->SaveAs(("./fig/" + name + "2dprofile.C").c_str());
+    c2->SaveAs(("./fig/" + name + "2dprofile.pdf").c_str());
+
+    ROOT::Math::MinimizerOptions::SetDefaultMinimizer(oldMeth.c_str(), oldAlgo.c_str());
+    return 0;
+}
+
+int readMatrix(string filename, double *R, double xCrys, double yCrys) {
+    const float crystalSize = sqrt(xCrys*yCrys); // mm
+
+    float time = 0;
+    float beamRate = 0;
+
+    ifstream file(filename);
+
+    string name = filename;
+
+    size_t pos = name.rfind('/');
+    if (pos != string::npos) name.replace(0, pos + 1, "");
+    pos = name.rfind('.');
+    if (pos != string::npos) name.replace(pos, name.length(), "");
+
+    string line;
+
+    TGraph2D *profile = new TGraph2D;
+    profile->SetName((name + "profile").c_str());
+    profile->SetTitle("Beam Profile;x (in mm);y (in mm)");
+
+    TH2Poly *prof2 = getMatrixLayout((name + "poly").c_str());
+
+    Double_t value = 0;
+    // Read the file data
+    Int_t iBin = 0;
+    Float_t x = -25.05;
+    Float_t y = 25;
+
+    while(file >> value) {
+        if (iBin < 81) {
+	 profile->SetPoint(iBin, x + 6 * (iBin % 9) + 1, y - 6 * (iBin / 9) - 1, value); 
+	 prof2->Fill(x + 6 * (iBin % 9) + 1, y - 6 * (iBin / 9) - 1, value);
+            ++iBin;
+        } else if (iBin == 81) {
+	 beamRate = value;
+	 ++iBin;
+        } else if (iBin == 82) {
+	 time = value;
+	 ++iBin;
+        }
+        
+    }
+
+    string oldAlgo = ROOT::Math::MinimizerOptions::DefaultMinimizerAlgo();
+    string oldMeth = ROOT::Math::MinimizerOptions::DefaultMinimizerType();
+
+    ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Fumili");
+
+    TF2* fit = new TF2("fit", "bigaus", -50, 50, -50 ,50);
+    // Starting Parameters for fit - they might need some adaption to the specific profile.
+    fit->SetParameters(profile->GetMaximum(), 0, 6, 0, 18, 0.1);
+    //fit->SetParLimits(1, -25, 25);
+    //fit->SetParLimits(2, 0, 20);
+    //fit->SetParLimits(3, -25, 25);
+    //fit->SetParLimits(4, 0, 20);
+    //fit->SetParLimits(6, -1, 1);
+    profile->Fit(fit, "P0");
+
+
+    TF2* theFit = (TF2*)profile->FindObject("fit");
+    Float_t N = theFit->GetMaximum();
+    theFit->SetContour(7);
+    for (int i = 0; i < 7; ++i) theFit->SetContourLevel(i, N * TMath::Gaus(3 - 0.5 * i));
+    TCanvas* c1 = new TCanvas(name.c_str() , name.c_str(), 800, 800);
+
+    prof2->Draw("col");
+    theFit->Draw("same cont3");
+
+    // Some calculations:
+
+//    Float_t Ntot = 2 * TMath::Pi() * fit->Eval(theFit->GetParameter(1), theFit->GetParameter(3)) * theFit->GetParameter(2) * theFit->GetParameter(4) * TMath::Sqrt(1 - theFit->GetParameter(5) * theFit->GetParameter(5)) / (crystalSize * crystalSize);
+    Float_t Ntot = theFit->GetParameter(0) / (crystalSize * crystalSize);
+    Float_t muonRate = Ntot * 0.22 / beamRate / time;
+    Float_t dMuonRate = theFit->GetParError(0) * 0.22 / beamRate / time;
+
+	std::cout << muonRate << " " << dMuonRate << std::endl;
+
+    TLegend* legend = new TLegend(0.5,0.7,0.9,0.9);
+    legend->AddEntry(fit, TString::Format("Fit: "), "");
+    legend->AddEntry(fit, format("     #mu = (", theFit->GetParameter(1), theFit->GetParError(1)) + format(", ", theFit->GetParameter(3), theFit->GetParError(3)) + ") mm", "");
+    legend->AddEntry(fit, format("     #sigma = (", theFit->GetParameter(2), theFit->GetParError(2)) + format(", ", theFit->GetParameter(4), theFit->GetParError(4)) + ") mm", "");
+    legend->AddEntry(fit, format("     Rate = ", muonRate, dMuonRate) +" mu/s", "");
+    legend->AddEntry(fit, TString::Format("     Exposition time = %.1e", time*1e6) +" #mus", "");
     TCanvas* c2 = new TCanvas((name + "2d" ).c_str(), name.c_str());
     fit->SetTitle((name + "Beam Profile;x [mm];y [mm];Rate [Hz]" ).c_str());
     fit->Draw("surf2");

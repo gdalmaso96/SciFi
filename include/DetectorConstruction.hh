@@ -38,6 +38,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction{
 	void SetSurface(G4bool);
 	void SetWidth(G4double);
 	void SetLength(G4double);
+	void SetLayerDinstance(G4double);
 	void SetSiPMmodel(G4String);
 
     private:
@@ -46,7 +47,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction{
 	DetectorMessenger* fDetectorMessenger;
 	void DefineMaterials();
 
-	G4double fFiberWidth, fFiberLength;
+	G4double fFiberWidth, fFiberLength, fLayerDinstance;
 
 	G4String fmodel;
 	G4int fNbOfPixelsX, fNbOfPixelsY, fNbOfPixels;

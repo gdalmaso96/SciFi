@@ -32,6 +32,7 @@ class DetectorMessenger : public G4UImessenger{
 		
 		G4UIcmdWithADoubleAndUnit* fFiberWidthCmd;
 		G4UIcmdWithADoubleAndUnit* fFiberLengthCmd;
+		G4UIcmdWithADoubleAndUnit* fLayerDinstanceCmd;
 		G4UIcmdWithAString* fSiPMmodelCmd;
 		G4UIcmdWithAString* fMaterialCmd;
 		G4UIcmdWithABool* fSurfaceCmd;
