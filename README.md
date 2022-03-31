@@ -8,5 +8,13 @@ SciFi  simulation
 
 # Installation:
 
+git clone this repo and create a build directory.
 
+<code> cd path-to-build
+
+<code> cmake path-to-repo
+
+<code> make -jN
+
+With N <= number of machine cores
 
